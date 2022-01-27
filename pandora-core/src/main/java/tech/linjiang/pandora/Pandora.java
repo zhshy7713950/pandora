@@ -7,6 +7,7 @@ import android.content.Context;
 
 import tech.linjiang.pandora.crash.CrashHandler;
 import tech.linjiang.pandora.database.Databases;
+import tech.linjiang.pandora.expand.ExpandItem;
 import tech.linjiang.pandora.function.IFunc;
 import tech.linjiang.pandora.history.HistoryRecorder;
 import tech.linjiang.pandora.inspector.attribute.AttrFactory;
@@ -46,6 +47,7 @@ public final class Pandora extends FileProvider implements SensorDetector.Callba
         attrFactory = new AttrFactory();
         crashHandler = new CrashHandler(app);
         historyRecorder = new HistoryRecorder(app);
+        expandController = new ExpandController();
     }
 
     public static Pandora get() {
@@ -67,6 +69,7 @@ public final class Pandora extends FileProvider implements SensorDetector.Callba
     private HistoryRecorder historyRecorder;
     private FuncController funcController;
     private SensorDetector sensorDetector;
+    private ExpandController expandController;
 
     public OkHttpInterceptor getInterceptor() {
         return interceptor;
@@ -84,6 +87,10 @@ public final class Pandora extends FileProvider implements SensorDetector.Callba
         return attrFactory;
     }
 
+    public ExpandController getExpandController() {
+        return expandController;
+    }
+
     /**
      * @hide
      */
@@ -99,6 +106,10 @@ public final class Pandora extends FileProvider implements SensorDetector.Callba
      */
     public void addFunction(IFunc func) {
         funcController.addFunc(func);
+    }
+
+    public void addExpandItem(ExpandItem item){
+        expandController.addExpandItem(item);
     }
 
     /**

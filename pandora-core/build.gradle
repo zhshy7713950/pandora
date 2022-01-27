@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='tech.linjiang'
+group = 'com.github.zhshy7713950'
 
 android {
     compileSdkVersion versions.COMPILE_SDK

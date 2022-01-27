@@ -18,13 +18,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.List;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+
+import tech.linjiang.pandora.ExpandController;
+import tech.linjiang.pandora.Pandora;
 import tech.linjiang.pandora.cache.Content;
 import tech.linjiang.pandora.core.R;
+import tech.linjiang.pandora.expand.ExpandItem;
+import tech.linjiang.pandora.expand.ExpandType;
 import tech.linjiang.pandora.ui.connector.SimpleOnActionExpandListener;
 import tech.linjiang.pandora.ui.connector.SimpleOnQueryTextListener;
 import tech.linjiang.pandora.util.FileUtil;
@@ -92,6 +98,10 @@ public class NetContentFragment extends BaseFragment {
         }
         getToolbar().getMenu().add(-1, 0, 1, R.string.pd_name_copy_value);
         getToolbar().getMenu().add(-1, 0, 2, R.string.pd_name_share);
+        final List<ExpandItem> expandItemList = Pandora.get().getExpandController().getExpandItem(ExpandType.NETWORK);
+        for (int i = 0; i < expandItemList.size(); i++) {
+            getToolbar().getMenu().add(-1, 0, i + 3, expandItemList.get(i).getText());
+        }
         getToolbar().setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -100,6 +110,8 @@ public class NetContentFragment extends BaseFragment {
                     Utils.copy2ClipBoard(originContent);
                 } else if (item.getOrder() == 2) {
                     saveAsFileAndShare(originContent);
+                } else {
+                    expandItemList.get(item.getOrder() - 3).onExpandItemClick(webView, originContent);
                 }
                 return true;
             }
@@ -137,10 +149,9 @@ public class NetContentFragment extends BaseFragment {
         });
 
 
-
         View closeView = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         if (closeView != null) {
-            ((ViewGroup)closeView.getParent()).removeView(closeView);
+            ((ViewGroup) closeView.getParent()).removeView(closeView);
         }
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewKnife.dip2px(32), ViewGroup.LayoutParams.MATCH_PARENT);
@@ -157,8 +168,8 @@ public class NetContentFragment extends BaseFragment {
         final TextView searchStats = new TextView(getContext());
         searchStats.setTextSize(10);
         searchStats.setGravity(Gravity.CENTER_VERTICAL);
-        searchStats.setPadding(ViewKnife.dip2px(8),0,ViewKnife.dip2px(8),0);
-        ((LinearLayout) searchView.getChildAt(0)).addView(searchStats,new LinearLayout.LayoutParams(
+        searchStats.setPadding(ViewKnife.dip2px(8), 0, ViewKnife.dip2px(8), 0);
+        ((LinearLayout) searchView.getChildAt(0)).addView(searchStats, new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT
         ));
         ((LinearLayout) searchView.getChildAt(0)).addView(prevView, params);
