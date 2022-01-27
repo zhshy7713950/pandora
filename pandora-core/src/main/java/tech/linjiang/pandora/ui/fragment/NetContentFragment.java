@@ -110,8 +110,8 @@ public class NetContentFragment extends BaseFragment {
                     Utils.copy2ClipBoard(originContent);
                 } else if (item.getOrder() == 2) {
                     saveAsFileAndShare(originContent);
-                } else {
-                    expandItemList.get(item.getOrder() - 3).onExpandItemClick(webView, originContent);
+                } else if (item.getOrder() > 2){
+                    expandItemList.get(item.getOrder() - 3).onExpandItemClick(webView, originContent,contentType);
                 }
                 return true;
             }
